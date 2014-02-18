@@ -126,12 +126,13 @@ public class Manager extends Service {
 			case MSG_STATE_CHANGE:
                 switch (msg.arg1) {
                 case BluetoothService.STATE_CONNECTED:
-                	break;
+                	
                 case BluetoothService.STATE_CONNECTING:
-                	break;
+                	
                 case BluetoothService.STATE_LISTEN:
-                	break;
+                	
                 case BluetoothService.STATE_NONE:
+                	state = msg.arg1;
                 	break;
                 case BluetoothService.CLIENT:
                 	break;
@@ -178,32 +179,31 @@ public class Manager extends Service {
 				break;
 			case MSG_WRITE:
 				byte[] wwriteBuf = null;
-
-				switch (msg.arg1) {
-				// client to server
-				case TAKEPIC:
-					if(state == BluetoothService.STATE_CONNECTED){
+				if(state == BluetoothService.STATE_CONNECTED){
+					switch (msg.arg1) {
+					// client to server
+					case TAKEPIC:
 						tempstr = STR_EVENT;	// take pic
 						mBTService.write(tempstr,"");
-					}else{
-						Toast.makeText(getApplicationContext(), "Bluetooth Not Connected", Toast.LENGTH_SHORT)
-	                	.show();
+						break;
+	
+					case INFO:
+						tempstr = STR_INFO;	
+						mBTService.write(tempstr,"");
+						break;
+						
+					case IMAGE:
+						tempstr = STR_FILE;
+						if((wwriteBuf = msg.getData().getByteArray(SEND_IMAGE)) != null){
+							mBTService.write(tempstr, wwriteBuf);
+						}else{
+							if(D) Log.e(TAG,"data is null!!");
+						}
+						break;
 					}
-					break;
-	/*
-				case INFO:
-					// temp = INFO+sPreview.getCamParam();
-					// wwriteBuf = temp.getBytes();
-					break;
-						*/
-				case IMAGE:
-					tempstr = STR_FILE;
-					if((wwriteBuf = msg.getData().getByteArray(SEND_IMAGE)) != null){
-						mBTService.write(tempstr, wwriteBuf);
-					}else{
-						if(D) Log.e(TAG,"data is null!!");
-					}
-					break;
+				}else{
+					Toast.makeText(getApplicationContext(), "Bluetooth Not Connected", Toast.LENGTH_SHORT)
+                	.show();
 				}
 				break;
 				

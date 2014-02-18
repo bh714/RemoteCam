@@ -550,7 +550,6 @@ public class BluetoothService {
                     // file 일 때(image)
                     if(inc_what.equals(Manager.STR_FILE)){
             		    try{
-            			    //FileOutputStream fos = new FileOutputStream(tempFile);
             		    	ByteArrayOutputStream baos = new ByteArrayOutputStream(bodySize);
             			    // read body
             			    while(readSize < bodySize){
@@ -584,7 +583,13 @@ public class BluetoothService {
                     
                     //------------------------------------------------------------------------------------
                     // camera info 등
-                    if(inc_what.equals(Manager.STR_INFO)){	
+                    if(inc_what.equals(Manager.STR_INFO)){
+                    	Message msg = mHandler.obtainMessage(Manager.MSG_TOAST);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Manager.TOAST, "사진 저장 완료");
+                        msg.setData(bundle);
+                        mHandler.sendMessage(msg);
+                        /*
                     	StringBuilder body = new StringBuilder();
                     	while(readSize < bodySize){
                     		rsize = mmInStream.read(buffer,0,buffer.length);
@@ -594,6 +599,7 @@ public class BluetoothService {
                     	String info = body.toString();
                     	Message msg = mHandler.obtainMessage(Manager.MSG_READ,Manager.INFO,-1,(Object)info);
                         mHandler.sendMessage(msg);
+                        */
                     }
                     
                     //------------------------------------------------------------------------------------

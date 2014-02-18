@@ -21,7 +21,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -30,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -184,19 +182,27 @@ public class ServerActivity extends Binding {
         		}
         		break;
         	case Manager.MSG_WRITE :
-        		if(mPreview.mSendImageStart && mIsBound){
-		   			Bundle bundle = new Bundle();
-		   			bundle.putByteArray(Manager.SEND_IMAGE, mPreview.getSendImageBuffer());
-		   			Message imgmsg = Message.obtain(null, Manager.MSG_WRITE, Manager.IMAGE, -1, null);
-		   			imgmsg.setData(bundle);
-		   			send(TAG, imgmsg);
-		   			
-	        		//long dtime = 1000/ mPreview.FRAMES_PER_SEC;
-	        		this.sendEmptyMessageDelayed(Manager.MSG_WRITE, 500);
-        		}
-        		break;
-            }
-        }
+        		switch(msg.arg1){
+            	case Manager.INFO:
+            		Message infomsg = Message.obtain(null, Manager.MSG_WRITE, Manager.INFO, -1, null);
+        			send(TAG,infomsg);
+    				break;
+            	case Manager.IMAGE:
+            		if(mPreview.mSendImageStart && mIsBound){
+    		   			Bundle bundle = new Bundle();
+    		   			bundle.putByteArray(Manager.SEND_IMAGE, mPreview.getSendImageBuffer());
+    		   			Message imgmsg = Message.obtain(null, Manager.MSG_WRITE, Manager.IMAGE, -1, null);
+    		   			imgmsg.setData(bundle);
+    		   			send(TAG, imgmsg);
+    		   			
+    	        		//long dtime = 1000/ mPreview.FRAMES_PER_SEC;
+    		   			Message delaymsg = Message.obtain(null, Manager.MSG_WRITE, Manager.IMAGE, -1, null);
+    	        		this.sendMessageDelayed(delaymsg, 500);
+            		}
+            		break;
+        		} // msg.arg2 switch
+            } // msg.arg1 switch
+        } // handleMessage
     };
 }
 
@@ -387,17 +393,11 @@ class ServerPreview extends ViewGroup implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        // Now that the size is known, set up the camera parameters and begin
-        // the preview.
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         requestLayout();
 
         mCamera.setPreviewCallback(mFrame);
-        //int expectedBytes = mPreviewSize.width * mPreviewSize.height *
-    	//		ImageFormat.getBitsPerPixel(ImageFormat.NV21) / 8;
-        //mCamera.addCallbackBuffer(mImageDatabuffer = new byte[expectedBytes]);
-        
         mCamera.setParameters(parameters);
         mCamera.startPreview();
         
@@ -405,6 +405,9 @@ class ServerPreview extends ViewGroup implements SurfaceHolder.Callback {
     
 	public void takePicture(){
 		mCamera.takePicture(null, null, mPicture);
+		
+		Message msg = mHandler.obtainMessage(Manager.MSG_WRITE, Manager.INFO,-1,null);
+		mHandler.sendMessageAtFrontOfQueue(msg);
 	}
     
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -427,6 +430,7 @@ class ServerPreview extends ViewGroup implements SurfaceHolder.Callback {
 	        } finally{
 	        	mCamera.stopPreview();
 	        	mCamera.startPreview();
+	        	mCamera.setPreviewCallback(mFrame);
 	            Message msg = mHandler.obtainMessage(Manager.MSG_TOAST);
 	            Bundle bundle = new Bundle();
 	            bundle.putString(Manager.TOAST, "사진 저장완료");
@@ -437,7 +441,7 @@ class ServerPreview extends ViewGroup implements SurfaceHolder.Callback {
 	};
 
 	private static File getOutputMediaFile(){
-	    File SaveDir = new File(savePath, "RemoteCamera");
+	    File SaveDir = new File(savePath, "RemoteCam");
 	    
 	    if (! SaveDir.exists()){
 	        if (! SaveDir.mkdirs()){
@@ -468,8 +472,9 @@ class ServerPreview extends ViewGroup implements SurfaceHolder.Callback {
     			e.printStackTrace();
     		}
 			if(!mSendImageStart){
-				mHandler.sendEmptyMessage(Manager.MSG_WRITE);
+				mHandler.sendMessage(mHandler.obtainMessage(Manager.MSG_WRITE, Manager.IMAGE, -1));
 				mSendImageStart = true;
+				Log.d(TAG,"Start image preview");
 			}
 		}
 	};

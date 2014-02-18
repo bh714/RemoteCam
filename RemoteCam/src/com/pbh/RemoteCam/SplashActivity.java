@@ -17,7 +17,7 @@ public class SplashActivity extends Activity {
 
 		setContentView(R.layout.activity_splash);
 
-		Handler handler = new Handler(){	// 어따쓰는거지?
+		Handler handler = new Handler(){	
 			public void handlerMessage(Message msg){
 				finish();
 			}

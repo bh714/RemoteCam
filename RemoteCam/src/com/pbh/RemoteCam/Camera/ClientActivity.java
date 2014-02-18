@@ -137,9 +137,7 @@ public class ClientActivity extends Binding {
 		super.onResume();
 	}
 	
-	/*
-	 *  handler 기술 필요
-	 */
+
 	public class incom extends Handler {
 	    @Override
 	    public void handleMessage(Message msg) {
