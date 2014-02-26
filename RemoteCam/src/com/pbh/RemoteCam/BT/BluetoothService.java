@@ -613,14 +613,7 @@ public class BluetoothService {
 	                break;
 	            }
             } // while()
-    		
-    		try {
-				mmInStream.close();
-				cancel();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			cancel();
     	} // run()
     	
         public void cancel() {

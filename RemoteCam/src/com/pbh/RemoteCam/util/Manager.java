@@ -66,7 +66,7 @@ public class Manager extends Service {
     /** msg.what */
     public static final int MSG_DEVICE_NAME = 6;
     /** msg.what */
-    public static final int MSG_DEVICE_ADDRESS = 7; // 왜 있는거지? 이거 뭐지?
+    public static final int MSG_DEVICE_ADDRESS = 7;
     /** msg.what */
     public static final int MSG_DEVICE_CONNECT = 8;
     /** msg.what */

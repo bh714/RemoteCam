@@ -48,9 +48,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int FrameLayout=0x7f080000;
         public static final int bg=0x7f080002;
         public static final int bt_capture=0x7f080001;
-        public static final int bt_client=0x7f080005;
+        public static final int bt_client=0x7f080007;
         public static final int bt_etc=0x7f080006;
-        public static final int bt_server=0x7f080007;
+        public static final int bt_server=0x7f080005;
         public static final int button_scan=0x7f08000b;
         public static final int devices_list=0x7f08000a;
         public static final int imageView1=0x7f080008;

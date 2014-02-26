@@ -163,7 +163,13 @@ public class ServerActivity extends Binding {
         }
     }
 
-    public class incom extends Handler {
+    @Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+	}
+
+	public class incom extends Handler {
         @Override
         public void handleMessage(Message msg) {
         	switch (msg.what) {

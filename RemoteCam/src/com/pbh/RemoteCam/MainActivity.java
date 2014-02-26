@@ -121,7 +121,6 @@ public class MainActivity extends Binding {
 		
 		LinearLayout btStartCamera = (LinearLayout)findViewById(R.id.bt_etc);
 		btStartCamera.setOnClickListener(listener);
-
     }
     
     View.OnClickListener listener = new OnClickListener(){

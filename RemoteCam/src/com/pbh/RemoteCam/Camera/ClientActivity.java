@@ -42,7 +42,7 @@ public class ClientActivity extends Binding {
     public static final int ANDROID_BUILD_GINGERBREAD = 9;
     public static final int SCREEN_ORIENTATION_SENSOR_LANDSCAPE = 6;
     
-	private static final int QUEUSIZE = 5;
+	private static final int QUEUSIZE = 3;
     
     private ArrayList<byte[]> mImageBuffer;
     private ArrayList<byte[]> mImagePlay;
@@ -167,6 +167,7 @@ public class ClientActivity extends Binding {
 	    		break;
 	    	case Manager.MSG_REGISTER_CLIENT:
 	    		break;
+    		default :
 	        }
 	    }
 	};
@@ -255,6 +256,7 @@ class ClientPreview extends SurfaceView implements SurfaceHolder.Callback {
 	
 	public void pause(){
 		isRunnable = false;
+		isDisplay = false;
 	}
 	
 	public void setImage(Bitmap i){
